@@ -3,6 +3,8 @@ import argparse
 import win32net
 import win32netcon
 import win32security
+from operator import itemgetter
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--farsh', '-f', help='Farsh number')
@@ -18,6 +20,9 @@ win32security.ImpersonateLoggedOnUser(win32security.LogonUser
 
 users, nusers, resume = win32net.NetUserEnum('vds{}.1cbit.ru'.format(args.farsh),
                                              2, win32netcon.FILTER_NORMAL_ACCOUNT)
-for user in users:
-    if user['name'] != 'Администратор' and user['name'] != 'Гость' and user['name'] != 'rsys':
+
+sorted_users = sorted(users, key=itemgetter('name'))
+
+for user in sorted_users:
+    if user['name'].lower() not in 'администраторгостьrsyskrbtgt' :
         print(user['name'], 'последний раз заходил ' + time.ctime(user['last_logon']))
