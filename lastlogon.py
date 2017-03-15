@@ -23,6 +23,19 @@ users, nusers, resume = win32net.NetUserEnum('vds{}.1cbit.ru'.format(args.farsh)
 
 sorted_users = sorted(users, key=itemgetter('name'))
 
-for user in sorted_users:
-    if user['name'].lower() not in 'администраторгостьrsyskrbtgt' :
-        print(user['name'], 'последний раз заходил ' + time.ctime(user['last_logon']))
+#temp for inventory
+with open('farsh-{}.txt'.format(args.farsh), "w") as ouf:
+    for user in sorted_users:
+        if user['name'].lower() not in 'администраторгостьrsyskrbtgt' :
+            print(user['name'], 'последний раз заходил ' + time.strftime('%d.%m.%Y', time.localtime(int(user['last_logon']))), file=ouf)
+
+#normal usage
+#for user in sorted_users:
+#    if user['name'].lower() not in 'администраторгостьrsyskrbtgt':
+#        print(user['name'], 'последний раз заходил ' + time.strftime('%d.%m.%Y', time.localtime(int(user['last_logon']))))
+
+#older month usage
+#for user in sorted_users:
+#    if user['name'].lower() not in 'администраторгостьrsyskrbtgt':
+#        if time.time() - user['last_logon'] > 2592000:
+#            print(user['name'], 'последний раз заходил ' + time.strftime('%d.%m.%Y', time.localtime(int(user['last_logon']))))
